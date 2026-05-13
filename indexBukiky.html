@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamilyMart Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --sidebar-bg: #1e2235;
+            --sidebar-hover: #2a2f4c;
+            --text-color: #a0a5ba;
+            --active-text: #00d282;
+            --header-bg: #1e2235;
+            --main-bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --btn-red: #ff4d4f;
+            --btn-hover: #ff7875;
+            --table-header-bg: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--main-bg);
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00a0e9; /* FamilyMart Blue */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-logo span {
+            color: #00d282; /* FamilyMart Green */
+        }
+
+        .sidebar-menu {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-top: 10px;
+        }
+
+        /* Custom Scrollbar for Menu */
+        .sidebar-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: #3b4260;
+            border-radius: 4px;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .menu-item.active {
+            color: var(--active-text);
+        }
+
+        .submenu {
+            background-color: #171a2b;
+            padding: 10px 0;
+        }
+
+        .submenu-item {
+            padding: 10px 20px 10px 40px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            color: #8c91a7;
+        }
+
+        .submenu-item:hover {
+            color: #fff;
+        }
+
+        .submenu-item.active {
+            color: var(--active-text);
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            font-size: 11px;
+            color: #6c7293;
+            line-height: 1.5;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            height: 60px;
+            background-color: var(--header-bg);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 30px;
+            color: #fff;
+            z-index: 10;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: #3b4260;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            /* Using a generic food background to match the vibe of the original image */
+            background: linear-gradient(rgba(244, 246, 249, 0.85), rgba(244, 246, 249, 0.95)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000&auto=format&fit=crop') center/cover;
+            position: relative;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 15px;
+            margin: 0;
+            width: 100%;
+            min-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icon-btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .icon-btn-wrapper img {
+            height: 32px;
+        }
+
+        .icon-btn-wrapper span {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .icon-btn-wrapper:hover {
+            transform: translateY(-2px);
+        }
+        
+        .icon-btn-wrapper:hover span {
+            color: var(--btn-red);
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 250px;
+            outline: none;
+            font-size: 13px;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #00d282;
+            box-shadow: 0 0 0 2px rgba(0, 210, 130, 0.1);
+        }
+
+        /* Table Wrapper for Horizontal Scroll */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border: none;
+            border-radius: 6px;
+            flex-grow: 1;
+            background: #fff;
+        }
+
+        /* Custom Scrollbar for Table */
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            font-size: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        /* Remove ALL bottom borders from the last row */
+        tr:last-child th,
+        tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            font-weight: 600;
+            color: #4b5563;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        th:hover {
+            background-color: #e2e8f0;
+        }
+        
+        .sort-icon {
+            display: inline-block;
+            margin-left: 5px;
+            color: #a1a1aa;
+            font-size: 10px;
+        }
+
+        td {
+            color: #3f3f46;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div style="display:flex; flex-direction:column; gap:3px; margin-right: 8px;">
+                    <div style="width: 22px; height: 5px; background: #00d282; border-radius: 1px;"></div>
+                    <div style="width: 22px; height: 5px; background: #00a0e9; border-radius: 1px;"></div>
+                </div>
+                Family<span>Mart</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-item active">
+                <span>Job ESL Price</span>
+                <span style="font-size: 10px;">▼</span>
+            </div>
+            <div class="submenu">
+                <div class="submenu-item active">All Store</div>
+                <div class="submenu-item">Store Schedule</div>
+                <div class="submenu-item">Store Schedule New</div>
+                <div class="submenu-item">Store Holiday</div>
+            </div>
+            
+            <div class="menu-item">
+                <span>Stock</span>
+            </div>
+            <div class="menu-item">
+                <span>Product</span>
+                <span style="font-size: 10px;">▶</span>
+            </div>
+            <div class="menu-item">
+                <span>Banner</span>
+            </div>
+            <div class="menu-item">
+                <span>Voucher</span>
+                <span style="font-size: 10px;">▶</span>
+            </div>
+            <div class="menu-item">
+                <span>Setting</span>
+                <span style="font-size: 10px;">▶</span>
+            </div>
+            <div class="menu-item">
+                <span>Member</span>
+                <span style="font-size: 10px;">▶</span>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            Copyright © 2022<br>
+            PT Fajar Mitra Indah
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-profile">
+                <span>Hi, <strong>Jovano</strong></span>
+                <div class="user-avatar">J</div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Job ESL Price</div>
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <div class="icon-btn-wrapper">
+                            <img src="History Logging.png" alt="History Logging">
+                            <span>History Logging</span>
+                        </div>
+                        <div class="icon-btn-wrapper">
+                            <img src="Execute.png" alt="Execute">
+                            <span>Execute</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-container">
+                    <label>Search:</label>
+                    <input type="text" class="search-input">
+                </div>
+
+                <!-- Table Responsive Wrapper -->
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <!-- Modified Columns based on Image 2 -->
+                                <th>Article <span class="sort-icon">⇅</span></th>
+                                <th>Barcode <span class="sort-icon">⇅</span></th>
+                                <th>Product Name <span class="sort-icon">⇅</span></th>
+                                <th>Sell Price <span class="sort-icon">⇅</span></th>
+                                <th>Unit <span class="sort-icon">⇅</span></th>
+                                <th>Promo Price <span class="sort-icon">⇅</span></th>
+                                <th>Promo Description <span class="sort-icon">⇅</span></th>
+                                <th>Brand <span class="sort-icon">⇅</span></th>
+                                <th>SOH <span class="sort-icon">⇅</span></th>
+                                <th>QRCode <span class="sort-icon">⇅</span></th>
+                                <th>Description <span class="sort-icon">⇅</span></th>
+                                <th>StorageLife <span class="sort-icon">⇅</span></th>
+                                <th>ShelfLife <span class="sort-icon">⇅</span></th>
+                                <th>Size <span class="sort-icon">⇅</span></th>
+                                <th>Fac <span class="sort-icon">⇅</span></th>
+                                <th>Price3Description <span class="sort-icon">⇅</span></th>
+                                <th>Price3 <span class="sort-icon">⇅</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dummy Data Row 1 -->
+                            <tr>
+                                <td>100123</td>
+                                <td>8991234567890</td>
+                                <td>Kopi Kenangan Mantan</td>
+                                <td>18,000</td>
+                                <td>PCS</td>
+                                <td>Yes</td>
+                                <td>Discount 10%</td>
+                                <td>Kopi Kenangan</td>
+                                <td>50</td>
+                                <td>QR100123</td>
+                                <td>Kopi susu gula aren</td>
+                                <td>3 Days</td>
+                                <td>1 Day</td>
+                                <td>Regular</td>
+                                <td>2</td>
+                                <td>Promo GoPay</td>
+                                <td>16,200</td>
+                            </tr>
+                            <!-- Dummy Data Row 2 -->
+                            <tr>
+                                <td>100124</td>
+                                <td>8990987654321</td>
+                                <td>Onigiri Tuna Mayo</td>
+                                <td>15,000</td>
+                                <td>PCS</td>
+                                <td>No</td>
+                                <td>-</td>
+                                <td>FamilyMart</td>
+                                <td>25</td>
+                                <td>QR100124</td>
+                                <td>Nasi kepal isi tuna</td>
+                                <td>2 Days</td>
+                                <td>1 Day</td>
+                                <td>Standard</td>
+                                <td>4</td>
+                                <td>-</td>
+                                <td>15,000</td>
+                            </tr>
+                            <!-- Dummy Data Row 3 -->
+                            <tr>
+                                <td>100125</td>
+                                <td>8991122334455</td>
+                                <td>Air Mineral Aqua 600ml</td>
+                                <td>4,000</td>
+                                <td>BTL</td>
+                                <td>Yes</td>
+                                <td>Beli 2 Gratis 1</td>
+                                <td>Aqua</td>
+                                <td>120</td>
+                                <td>QR100125</td>
+                                <td>Air mineral pegunungan</td>
+                                <td>1 Year</td>
+                                <td>1 Year</td>
+                                <td>600ml</td>
+                                <td>6</td>
+                                <td>-</td>
+                                <td>4,000</td>
+                            </tr>
+                            <!-- Dummy Data Row 4 -->
+                            <tr>
+                                <td>100126</td>
+                                <td>8995544332211</td>
+                                <td>Sari Roti Sobek Coklat</td>
+                                <td>16,500</td>
+                                <td>PCS</td>
+                                <td>No</td>
+                                <td>-</td>
+                                <td>Sari Roti</td>
+                                <td>15</td>
+                                <td>QR100126</td>
+                                <td>Roti sobek isi coklat</td>
+                                <td>5 Days</td>
+                                <td>5 Days</td>
+                                <td>Large</td>
+                                <td>3</td>
+                                <td>-</td>
+                                <td>16,500</td>
+                            </tr>
+                            <!-- Dummy Data Row 5 -->
+                            <tr>
+                                <td>100127</td>
+                                <td>8995544332212</td>
+                                <td>Indomie Goreng Original</td>
+                                <td>3,000</td>
+                                <td>PCS</td>
+                                <td>Yes</td>
+                                <td>Beli 5 Rp 14.000</td>
+                                <td>Indomie</td>
+                                <td>300</td>
+                                <td>QR100127</td>
+                                <td>Mie instan goreng</td>
+                                <td>6 Months</td>
+                                <td>6 Months</td>
+                                <td>Standard</td>
+                                <td>8</td>
+                                <td>-</td>
+                                <td>3,000</td>
+                            </tr>
+                            <!-- Dummy Data Row 6 -->
+                            <tr>
+                                <td>100128</td>
+                                <td>8995544332213</td>
+                                <td>Chitato Sapi Panggang</td>
+                                <td>11,500</td>
+                                <td>PCS</td>
+                                <td>No</td>
+                                <td>-</td>
+                                <td>Chitato</td>
+                                <td>45</td>
+                                <td>QR100128</td>
+                                <td>Keripik kentang rasa sapi panggang</td>
+                                <td>8 Months</td>
+                                <td>8 Months</td>
+                                <td>68g</td>
+                                <td>4</td>
+                                <td>-</td>
+                                <td>11,500</td>
+                            </tr>
+                            <!-- Dummy Data Row 7 -->
+                            <tr>
+                                <td>100129</td>
+                                <td>8995544332214</td>
+                                <td>Teh Pucuk Harum 350ml</td>
+                                <td>3,500</td>
+                                <td>BTL</td>
+                                <td>Yes</td>
+                                <td>Diskon Rp 500</td>
+                                <td>Teh Pucuk</td>
+                                <td>150</td>
+                                <td>QR100129</td>
+                                <td>Minuman teh melati</td>
+                                <td>1 Year</td>
+                                <td>1 Year</td>
+                                <td>350ml</td>
+                                <td>6</td>
+                                <td>-</td>
+                                <td>3,000</td>
+                            </tr>
+                            <!-- Dummy Data Row 8 -->
+                            <tr>
+                                <td>100130</td>
+                                <td>8995544332215</td>
+                                <td>Yakult 5s</td>
+                                <td>10,000</td>
+                                <td>PACK</td>
+                                <td>No</td>
+                                <td>-</td>
+                                <td>Yakult</td>
+                                <td>30</td>
+                                <td>QR100130</td>
+                                <td>Minuman probiotik</td>
+                                <td>40 Days</td>
+                                <td>40 Days</td>
+                                <td>5x65ml</td>
+                                <td>3</td>
+                                <td>-</td>
+                                <td>10,000</td>
+                            </tr>
+                            <!-- Dummy Data Row 9 -->
+                            <tr>
+                                <td>100131</td>
+                                <td>8995544332216</td>
+                                <td>SilverQueen Cashew 62g</td>
+                                <td>17,500</td>
+                                <td>PCS</td>
+                                <td>Yes</td>
+                                <td>Beli 2 Diskon 20%</td>
+                                <td>SilverQueen</td>
+                                <td>60</td>
+                                <td>QR100131</td>
+                                <td>Coklat susu dengan kacang mete</td>
+                                <td>1.5 Years</td>
+                                <td>1.5 Years</td>
+                                <td>62g</td>
+                                <td>4</td>
+                                <td>-</td>
+                                <td>17,500</td>
+                            </tr>
+                            <!-- Dummy Data Row 10 -->
+                            <tr>
+                                <td>100132</td>
+                                <td>8995544332217</td>
+                                <td>Ultramilk Coklat 250ml</td>
+                                <td>6,500</td>
+                                <td>PCS</td>
+                                <td>No</td>
+                                <td>-</td>
+                                <td>Ultramilk</td>
+                                <td>90</td>
+                                <td>QR100132</td>
+                                <td>Susu UHT rasa coklat</td>
+                                <td>10 Months</td>
+                                <td>10 Months</td>
+                                <td>250ml</td>
+                                <td>5</td>
+                                <td>-</td>
+                                <td>6,500</td>
+                            </tr>
+                            <!-- Dummy Data Row 11 -->
+                            <tr>
+                                <td>100133</td>
+                                <td>8995544332218</td>
+                                <td>Marlboro Red</td>
+                                <td>38,000</td>
+                                <td>BKS</td>
+                                <td>No</td>
+                                <td>-</td>
+                                <td>Marlboro</td>
+                                <td>100</td>
+                                <td>QR100133</td>
+                                <td>Rokok putih</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>20 Batang</td>
+                                <td>8</td>
+                                <td>-</td>
+                                <td>38,000</td>
+                            </tr>
+                            <!-- Dummy Data Row 12 -->
+                            <tr>
+                                <td>100134</td>
+                                <td>8995544332219</td>
+                                <td>Taro Net Seaweed</td>
+                                <td>5,500</td>
+                                <td>PCS</td>
+                                <td>Yes</td>
+                                <td>Diskon Rp 500</td>
+                                <td>Taro</td>
+                                <td>50</td>
+                                <td>QR100134</td>
+                                <td>Snack ekstrudat rasa rumput laut</td>
+                                <td>6 Months</td>
+                                <td>6 Months</td>
+                                <td>40g</td>
+                                <td>3</td>
+                                <td>-</td>
+                                <td>5,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
